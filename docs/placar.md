@@ -27,7 +27,8 @@ Mesmo alvo, mesma versão do alvo, mesmo modelo, pra comparar versões da skill 
 
 ## Resultados
 
-Ainda sem rodadas publicadas contra os alvos acima. Cada rodada entra aqui com a versão da skill, a data e o link pro detalhe. As rodadas em sites reais ficam nos [estudos de caso](casos/), a começar pelo [guavovic-website](casos/guavovic-website.md).
+Primeira rodada publicada: Juice Shop em 26/10/2026. Cada rodada entra aqui com a versão da skill, a data e o link pro detalhe. As rodadas em sites reais ficam nos [estudos de caso](casos/), a começar pelo [guavovic-website](casos/guavovic-website.md).
 
 | Versão | Data | Alvo | Acertos | Falsos positivos | Fora do alcance |
 |---|---|---|---|---|---|
+| v0.2 (não lançada) | 26/10/2026 | [Juice Shop 20.3.0](placar/juice-shop-2026-10-26.md) | 57 de 116 | 2 | 58 (1 não achado) |
