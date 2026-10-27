@@ -24,4 +24,4 @@ Três skills que auditam site, API ou aplicativo antes de ir ao ar, mais um suba
 - `regras-locais.md` dentro das skills é de quem usa, fica fora do git e nunca entra nas embalagens.
 - Texto em pt-BR, com acento e sem travessão. Arquivos em UTF-8 com fim de linha LF (ao gravar com Python, `newline="\n"`).
 - Nada de exemplo de payload de ataque no conteúdo.
-- Mudança que o usuário percebe entra no `CHANGELOG.md`, na seção da data, a mais nova no topo. O repositório não tem versões nem releases.
+- Mudança que o usuário percebe entra no `CHANGELOG.md`, em `## Não lançado`. Ao lançar, a seção vira `## vX.Y.Z (data)`, a versão sobe no `.claude-plugin/plugin.json` (as embalagens leem de lá) e sai uma release com a mesma tag.

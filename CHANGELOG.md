@@ -1,6 +1,20 @@
 # Mudanças
 
-O repositório não tem versões nem releases: quem instala usa a `main`. Cada mudança entra aqui na seção da data, a mais nova no topo.
+Cada mudança entra em `Não lançado` e vai pra seção da versão quando ela sai. Abaixo da v0.1.0 fica o histórico por data, de antes do versionamento.
+
+## Não lançado
+
+## v0.1.0 (27/10/2026)
+
+Primeira versão numerada, com o que existe hoje.
+
+- **auditoria-seguranca**: segredo exposto, controle de acesso, injeção, XSS, SSRF, CSRF, CORS, sessão, upload, XXE, dependência vulnerável, operação, com checklists por stack (Vercel, Astro, PWA, Supabase, Firebase, ASP.NET).
+- **auditoria-legal**: LGPD, cookies, privacidade e termos, CDC, Decreto 7.962, Marco Civil, ECA Digital, acessibilidade, direito autoral, e-mail marketing, Pix e gateway, GDPR e jogo com ranking online.
+- **auditoria-site**: formulários, 404, links, HTTPS e e-mail do domínio, Core Web Vitals, SEO, prévia social, analytics, uptime e rastreamento de erro, com checklists de Vercel, Astro e PWA.
+- Script `checagem_passiva.py`: HTTPS, TLS, headers, CSP, cookies, CORS, robots, sitemap, 404, arquivos sensíveis e DNS, em JSON, com alvo local em HTTP, fallback de SPA e API sem página na raiz.
+- Subagente `auditoria-executor` pra parte braçal.
+- Plugin e marketplace do Claude Code, e embalagens pro Codex, Gemini CLI, Cursor e Copilot (ainda sem teste em cada ferramenta, #14).
+- Estudo de caso do guavovic-website e placar contra o OWASP Juice Shop 20.3.0 (57 de 116), com comparação com ZAP, semgrep e Lighthouse.
 
 ## 22/10/2026 a 27/10/2026
 
