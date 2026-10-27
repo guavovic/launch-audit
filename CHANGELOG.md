@@ -4,6 +4,7 @@ O repositório não tem versões nem releases: quem instala usa a `main`. Cada m
 
 ## 22/10/2026 a 27/10/2026
 
+- Nome novo de novo: o repositório passou de `launch-audit` para `launch-audit-skills`, no padrão `<tema>-skills` dos pacotes de skills de agente. O endereço antigo redireciona. O plugin e o marketplace também mudaram de nome: a instalação agora é `/plugin marketplace add guavovic/launch-audit-skills` e `/plugin install launch-audit-skills@launch-audit-skills`, e quem instalou o `launch-audit` precisa remover e instalar de novo. As skills e o subagente mantêm os nomes. A regra do Cursor e as instruções do Copilot nas embalagens passam a se chamar `launch-audit-skills` (#39).
 - Nome novo: o repositório passou de `claude-security-audit` para `launch-audit`, porque audita site, API e aplicativo antes de ir ao ar, nas três frentes, e não depende de uma ferramenta só. O endereço antigo redireciona.
 - Instalação como plugin do Claude Code: `/plugin marketplace add guavovic/launch-audit` e `/plugin install launch-audit@launch-audit` trazem as três skills e o subagente, sem copiar pasta.
 - As skills acham o script de checagem passiva pela própria pasta (`${CLAUDE_SKILL_DIR}`), em vez do caminho fixo em `~/.claude/skills/`, e passam o caminho pro subagente no pedido. Assim funciona tanto no plugin quanto na cópia manual.

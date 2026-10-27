@@ -1,6 +1,6 @@
 <!-- Arquivo gerado por ferramentas/gerar_embalagens.py a partir de skills/ e agents/. Não edite à mão: mude a fonte e rode o script de novo. -->
 
-# launch-audit
+# launch-audit-skills
 
 Auditoria de site, API ou aplicativo antes de ir ao ar, em três skills:
 

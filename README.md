@@ -1,10 +1,10 @@
 <div align="center">
 
-# launch-audit
+# launch-audit-skills
 
 Skills pro Claude Code que auditam site, API ou aplicativo **antes de ir ao ar**, em três frentes: **segurança**, **risco jurídico no Brasil** e **qualidade de lançamento**. Toda conclusão vem com evidência, e o relatório também diz o que o projeto **não precisa**.
 
-![licença](https://img.shields.io/github/license/guavovic/launch-audit?style=flat-square&label=licen%C3%A7a)
+![licença](https://img.shields.io/github/license/guavovic/launch-audit-skills?style=flat-square&label=licen%C3%A7a)
 
 [Placar](docs/placar.md) • [Mudanças](CHANGELOG.md)
 
@@ -32,17 +32,17 @@ Junto vêm um **script de checagem passiva** (Python sem dependências, saída e
 Como plugin do Claude Code, dentro de uma sessão:
 
 ```
-/plugin marketplace add guavovic/launch-audit
-/plugin install launch-audit@launch-audit
+/plugin marketplace add guavovic/launch-audit-skills
+/plugin install launch-audit-skills@launch-audit-skills
 ```
 
-Ou pelo terminal, com `claude plugin marketplace add guavovic/launch-audit` e `claude plugin install launch-audit@launch-audit`. O plugin traz as três skills e o subagente `auditoria-executor`. As skills são chamadas pelo pedido ("audita a segurança desse projeto", "o site tá pronto pra lançar?") ou pelo nome, como `/launch-audit:auditoria-seguranca`. Pra receber as mudanças depois: `/plugin marketplace update launch-audit`.
+Ou pelo terminal, com `claude plugin marketplace add guavovic/launch-audit-skills` e `claude plugin install launch-audit-skills@launch-audit-skills`. O plugin traz as três skills e o subagente `auditoria-executor`. As skills são chamadas pelo pedido ("audita a segurança desse projeto", "o site tá pronto pra lançar?") ou pelo nome, como `/launch-audit-skills:auditoria-seguranca`. Pra receber as mudanças depois: `/plugin marketplace update launch-audit-skills`.
 
 Sem plugin, também dá pra copiar as pastas de `skills/` pra `~/.claude/skills/` e o arquivo de `agents/` pra `~/.claude/agents/`. Use um jeito ou o outro, não os dois juntos, senão cada skill aparece duas vezes.
 
 ### Outras ferramentas
 
-As skills seguem o formato aberto de Agent Skills, então a mesma fonte gera embalagens pro OpenAI Codex, o Gemini CLI, o Cursor e o GitHub Copilot, em [`embalagens/`](embalagens/), com o lugar de cada uma no [`embalagens/README.md`](embalagens/README.md). Elas existem, mas ainda não foram testadas em cada ferramenta: esse teste é a [#14](https://github.com/guavovic/launch-audit/issues/14), e só depois dele o README passa a dizer que funciona lá. Onde a ferramenta não tiver subagente, o agente principal faz a parte braçal com as mesmas regras.
+As skills seguem o formato aberto de Agent Skills, então a mesma fonte gera embalagens pro OpenAI Codex, o Gemini CLI, o Cursor e o GitHub Copilot, em [`embalagens/`](embalagens/), com o lugar de cada uma no [`embalagens/README.md`](embalagens/README.md). Elas existem, mas ainda não foram testadas em cada ferramenta: esse teste é a [#14](https://github.com/guavovic/launch-audit-skills/issues/14), e só depois dele o README passa a dizer que funciona lá. Onde a ferramenta não tiver subagente, o agente principal faz a parte braçal com as mesmas regras.
 
 Regras só suas (alvos que não podem ser tocados, onde salvar o relatório, qual perfil de navegador usar) vão num `regras-locais.md` dentro da pasta de cada skill. Ele é lido antes de tudo e fica fora do git. Na instalação por plugin a pasta é substituída a cada atualização, então quem usa regras locais prefere a cópia manual (ou um link pra um clone do repositório).
 
