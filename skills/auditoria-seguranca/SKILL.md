@@ -98,6 +98,8 @@ Pra **API sem página na raiz**, passe `--rota` com uma rota real: os headers s�
 
 Contra **alvo local** (`localhost`, `127.0.0.0/8`, `::1` e nomes `.localhost`, `.local` ou `.test`) o script aceita `http://`, por exemplo `http://127.0.0.1:3000`. TLS, redirecionamento pra HTTPS, HSTS, o atributo `Secure` do cookie e DNS saem como `info` (não se aplica no local) e o resto das checagens roda normal. Alvo remoto continua exigindo `https://`: com `http://` o script encerra com a explicação.
 
+Se o Python local não validar a cadeia de certificados de um site (`CERTIFICATE_VERIFY_FAILED`), o script não desliga a verificação: usa o armazenamento do sistema quando `truststore` está instalado (ou soma o `certifi`, se houver), registra a falha de TLS como achado dizendo se o certificado do alvo é inválido ou se a cadeia local está incompleta e, sem a home, encerra com mensagem e código 1 (o JSON sai igual). Nenhum dos dois pacotes é obrigatório: `pip install truststore` resolve.
+
 Site com **fallback de SPA** (qualquer caminho devolve a home com 200) aparece marcado no detalhe: sitemap que não existe, 404 que não existe e arquivos que só parecem estar lá.
 
 Ele cobre HTTPS e HSTS, TLS (versão, validade, TLS antigo), headers, CSP, cookies, compressão, `<head>` (title, description, og, favicon, lang, alt), scripts de terceiros e rastreadores, robots, sitemap, 404, sourcemap, arquivos sensíveis expostos e DNS (SPF, DMARC, CAA, MX). Guarde o JSON junto do relatório pra comparar na próxima revisão.
