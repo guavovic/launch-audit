@@ -48,6 +48,14 @@ Pacote suspeito: `npm view <pacote> time.created maintainers repository` e confe
 semgrep --config auto --error --quiet
 ```
 
+## Leitores de XML no código
+
+```bash
+grep -rInE "DocumentBuilderFactory|SAXParserFactory|XMLInputFactory|TransformerFactory|XmlDocument|XmlReader|XmlSerializer|simplexml_load|DOMDocument|libxml_|libxmljs|xml2js|fast-xml-parser|lxml|etree|xml\.sax|xml\.dom|\.xml"   --exclude-dir={node_modules,.git,dist,build,.next,out,Library,Temp} --include=*.{java,cs,php,py,js,ts} . | head -100
+```
+
+Cada ocorrência que recebe dado de fora (upload, corpo de requisição, arquivo importado) tem a configuração do parser conferida contra a linha de XML em A05 do checklist.
+
 ## Passivo em produção (uma requisição por item)
 
 ```bash

@@ -44,6 +44,12 @@ Cada item: **o que verificar**, **evidência**, **não se aplica**.
   - *Evidência*: endpoints que usam `Request.Form` ou `ReadFormAsync` sem binding.
   - *Não se aplica*: projeto sem formulário.
 
+## XML
+
+- **Leitor de XML sem DTD nem entidade externa.** `XmlReaderSettings` com `DtdProcessing = DtdProcessing.Prohibit` e `XmlResolver = null`; `XmlDocument` sem `XmlResolver`. Vale pra upload, SOAP, SVG e DOCX/XLSX lidos no servidor. Alternativa válida: o endpoint não aceita XML de entrada.
+  - *Evidência*: `grep -rnE "XmlDocument|XmlReader|XmlSerializer|XDocument|DtdProcessing|XmlResolver" --include=*.cs .` e a configuração de cada leitor que recebe dado de fora.
+  - *Não se aplica*: projeto que não lê XML vindo do usuário nem de sistema externo.
+
 ## CORS
 
 - **Origem específica, nunca qualquer origem com credenciais.** `AllowAnyOrigin` junto de `AllowCredentials` é recusado pelo próprio CORS; `SetIsOriginAllowed(_ => true)` com `AllowCredentials` contorna essa trava e é inseguro. Curinga de subdomínio (`SetIsOriginAllowedToAllowWildcardSubdomains`) só se todos os subdomínios são confiáveis.

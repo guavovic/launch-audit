@@ -13,6 +13,7 @@
 - Primeira rodada de placar: `auditoria-seguranca` contra o OWASP Juice Shop 20.3.0 local, com os 116 desafios oficiais como gabarito. 57 acertos, 58 fora do alcance (só aparecem explorando), 1 não achado e 2 falsos positivos, em `docs/placar/juice-shop-2026-10-26.md`. A rodada abriu dois buracos na skill: checagem passiva que não aceita alvo local em HTTP (#25) e falta de item de XXE no checklist (#26) (#2).
 - Checagem passiva reconhece o fallback de SPA (sitemap, 404, sourcemap e arquivos sensíveis que na verdade são a home) e API sem página na raiz (`--rota`, headers de página rebaixados pra `info` em resposta JSON, checagens de SEO puladas). Mais plataformas na lista de subdomínios sem DNS próprio (Render, Fly, Railway, Heroku, Azure, Firebase). Veio da rodada na achai-api.
 - Checagem passiva aceita alvo local em `http://` (localhost, 127.0.0.0/8, ::1, `.localhost`, `.local`, `.test`): TLS, redirecionamento pra HTTPS, HSTS, `Secure` do cookie e DNS viram `info` em vez de erro. Alvo remoto segue exigindo `https://` (#25).
+- Checklist de segurança ganha o controle de XXE: em todo ponto que lê XML (upload, SOAP, SVG, DOCX/XLSX), confirmar que o parser desliga DTD e entidade externa, ou que o endpoint não aceita XML. Item em A05 com a opção por biblioteca (Java, .NET, PHP, Python, Node), linha no Upload, item no checklist de ASP.NET e busca pelos leitores de XML em `comandos.md` (#26).
 
 ## v0.1.0 (21/10/2026)
 
