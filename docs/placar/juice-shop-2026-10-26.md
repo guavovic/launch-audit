@@ -9,7 +9,7 @@ Primeira rodada de placar da skill `auditoria-seguranca` contra um alvo com gaba
 | Data | 26/10/2026 |
 | Alvo | OWASP Juice Shop 20.3.0, em Docker, só no local (`http://127.0.0.1:3000`) |
 | Gabarito | lista oficial de `GET /api/Challenges` (116 desafios, com nome, categoria e dificuldade) |
-| Skill | `auditoria-seguranca` da v0.2.0 (rodada feita antes da tag, com o mesmo conteúdo) |
+| Skill | `auditoria-seguranca` da próxima versão (v0.2 em aberto no CHANGELOG; `plugin.json` sem número de versão ainda) |
 | Modelo | orquestração em Claude Opus 5.5 (este relatório); a parte braçal normalmente iria pro subagente `auditoria-executor` em Sonnet, aqui a orquestração fez tudo |
 | Fonte do código | tirada do container com `docker cp` (só leitura), porque a imagem é distroless e não tem shell |
 
