@@ -26,7 +26,7 @@ RAIZ = Path(__file__).resolve().parent.parent
 SAIDA = RAIZ / "embalagens"
 
 NOME = "launch-audit"
-VERSAO = "0.2.0"  # versão da próxima release; manter igual ao CHANGELOG
+VERSAO = "0.2.0"  # o manifesto do Gemini exige o campo; o repositório não tem releases
 DESCRICAO = (
     "Auditoria de site, API ou aplicativo antes de ir ao ar: segurança, risco jurídico no Brasil "
     "e qualidade de lançamento, com evidência e com o que o projeto não precisa."
