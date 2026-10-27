@@ -50,6 +50,7 @@ Mapeado no OWASP Top 10:2025 (A01 a A10), OWASP API Security Top 10 e OWASP Top 
 - **XSS**: framework escapa por padrão; revisar todo HTML injetado à mão e todo markdown renderizado (sanitizar com DOMPurify ou equivalente); CSP como segunda barreira.
 - **Comando do sistema**: texto do usuário nunca vira comando.
 - **Template**: texto do usuário não vira template.
+- **XML (XXE)**: em todo ponto que lê XML (upload, SOAP, SVG, DOCX/XLSX, importação, feed), o parser está com DTD e entidade externa desligados, ou o endpoint não aceita XML de entrada. Confirmar a configuração do leitor no código; a opção muda por biblioteca: Java (`disallow-doctype-decl` e `FEATURE_SECURE_PROCESSING` na fábrica do parser), .NET (`DtdProcessing.Prohibit` e `XmlResolver` nulo), PHP (não usar `LIBXML_NOENT`; libxml recente já vem seguro), Python (`defusedxml`, ou `resolve_entities=False` e `no_network=True` no lxml), Node (`noent` não ligado em `libxmljs`; preferir leitores que não resolvem entidade externa).
 - **Caminho de arquivo**: nome vindo do usuário nunca monta caminho no disco.
 - **Validação no back** com schema (Zod, Joi, FluentValidation, Pydantic) em todo endpoint. Validação no front é só UX, nunca segurança.
 
@@ -94,6 +95,7 @@ Mapeado no OWASP Top 10:2025 (A01 a A10), OWASP API Security Top 10 e OWASP Top 
 - Tipo conferido pelo conteúdo, não só pela extensão; tamanho máximo; nome gerado pelo servidor.
 - Guardado fora da raiz pública ou em bucket; servido com `Content-Disposition` e tipo correto.
 - Imagem reprocessada (remove metadados); SVG tratado como risco ou proibido.
+- Arquivo que é XML por dentro (SVG, DOCX, XLSX) lido com o parser seguro da linha de XML em A05.
 
 ## Bots e abuso
 
