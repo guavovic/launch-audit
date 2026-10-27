@@ -32,3 +32,5 @@ Primeira rodada publicada: Juice Shop em 26/10/2026. Cada rodada entra aqui com 
 | Versão | Data | Alvo | Acertos | Falsos positivos | Fora do alcance |
 |---|---|---|---|---|---|
 | v0.2 (não lançada) | 26/10/2026 | [Juice Shop 20.3.0](placar/juice-shop-2026-10-26.md) | 57 de 116 | 2 | 58 (1 não achado) |
+
+Comparação com ferramentas no mesmo alvo e na mesma data: [OWASP ZAP baseline, semgrep e Lighthouse](placar/comparacao-ferramentas-2026-10-26.md). Em segundos e sem tokens, o semgrep acerta 16 dos 116 desafios (injeção, redirecionamento, listagem de diretório), o ZAP baseline 1 e o Lighthouse 0; todos eles ficam dentro dos 57 da skill, e o ganho de juntar está em cabeçalhos, CORS e qualidade da página.

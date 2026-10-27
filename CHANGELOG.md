@@ -14,6 +14,7 @@
 - Checagem passiva reconhece o fallback de SPA (sitemap, 404, sourcemap e arquivos sensíveis que na verdade são a home) e API sem página na raiz (`--rota`, headers de página rebaixados pra `info` em resposta JSON, checagens de SEO puladas). Mais plataformas na lista de subdomínios sem DNS próprio (Render, Fly, Railway, Heroku, Azure, Firebase). Veio da rodada na achai-api.
 - Checagem passiva aceita alvo local em `http://` (localhost, 127.0.0.0/8, ::1, `.localhost`, `.local`, `.test`): TLS, redirecionamento pra HTTPS, HSTS, `Secure` do cookie e DNS viram `info` em vez de erro. Alvo remoto segue exigindo `https://` (#25).
 - Checklist de segurança ganha o controle de XXE: em todo ponto que lê XML (upload, SOAP, SVG, DOCX/XLSX), confirmar que o parser desliga DTD e entidade externa, ou que o endpoint não aceita XML. Item em A05 com a opção por biblioteca (Java, .NET, PHP, Python, Node), linha no Upload, item no checklist de ASP.NET e busca pelos leitores de XML em `comandos.md` (#26).
+- Comparação com ferramentas no Juice Shop 20.3.0 local, no mesmo dia da rodada da skill: OWASP ZAP baseline (1 desafio do gabarito, 63 s), semgrep (16, 133 s) e Lighthouse (0, 77 s, só qualidade da página), contra os 57 da skill. A união não passa de 57 no gabarito; o ganho de juntar está em cabeçalhos de isolamento, CORS e desempenho. Detalhe em `docs/placar/comparacao-ferramentas-2026-10-26.md`. Abriu um buraco na checagem passiva: não olha `Access-Control-Allow-Origin` (#32) (#4).
 
 ## v0.1.0 (21/10/2026)
 
