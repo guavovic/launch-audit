@@ -1,4 +1,4 @@
-"""Gera as embalagens do launch-audit pra cada ferramenta a partir de uma fonte só.
+"""Gera as embalagens do launch-audit-skills pra cada ferramenta a partir de uma fonte só.
 
 Fonte (editada à mão):
     skills/<nome>/          as três skills, no formato do Claude Code (que já é o plugin)
@@ -25,13 +25,13 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parent.parent
 SAIDA = RAIZ / "embalagens"
 
-NOME = "launch-audit"
+NOME = "launch-audit-skills"
 VERSAO = "0.2.0"  # o manifesto do Gemini exige o campo; o repositório não tem releases
 DESCRICAO = (
     "Auditoria de site, API ou aplicativo antes de ir ao ar: segurança, risco jurídico no Brasil "
     "e qualidade de lançamento, com evidência e com o que o projeto não precisa."
 )
-REPO = "https://github.com/guavovic/launch-audit"
+REPO = "https://github.com/guavovic/launch-audit-skills"
 
 # Arquivos da pasta de cada skill que nunca saem do disco de quem usa.
 IGNORAR_NOMES = {"regras-locais.md", "__pycache__"}

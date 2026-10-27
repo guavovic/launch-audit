@@ -12,8 +12,8 @@ Nas cópias, `${CLAUDE_SKILL_DIR}` vira `<pasta-desta-skill>`, a parte braçal d
 |---|---|---|---|
 | `codex/` | OpenAI Codex | `.agents/skills/<skill>/` e `.codex/agents/<agente>.toml` | No projeto, as duas pastas na raiz. Pra todos os projetos, as skills em `~/.agents/skills/` e o agente em `~/.codex/agents/` |
 | `gemini/` | Gemini CLI | Extensão: `gemini-extension.json`, `GEMINI.md`, `skills/`, `agents/` | `gemini extensions install <clone>/embalagens/gemini` (ou `gemini extensions link` pra acompanhar o clone). Subagente de extensão ainda é prévia no Gemini CLI |
-| `cursor/` | Cursor | `.cursor/skills/`, `.cursor/agents/` e uma regra `.cursor/rules/launch-audit.mdc` pedida pelo agente | A pasta `.cursor/` na raiz do projeto, ou skills e agente em `~/.cursor/skills/` e `~/.cursor/agents/` |
-| `copilot/` | GitHub Copilot | `.github/skills/`, `.github/agents/<agente>.agent.md` e `.github/instructions/launch-audit.instructions.md` | A pasta `.github/` na raiz do repositório. No Copilot CLI, skills e agente também valem em `~/.copilot/skills/` e `~/.copilot/agents/` |
+| `cursor/` | Cursor | `.cursor/skills/`, `.cursor/agents/` e uma regra `.cursor/rules/launch-audit-skills.mdc` pedida pelo agente | A pasta `.cursor/` na raiz do projeto, ou skills e agente em `~/.cursor/skills/` e `~/.cursor/agents/` |
+| `copilot/` | GitHub Copilot | `.github/skills/`, `.github/agents/<agente>.agent.md` e `.github/instructions/launch-audit-skills.instructions.md` | A pasta `.github/` na raiz do repositório. No Copilot CLI, skills e agente também valem em `~/.copilot/skills/` e `~/.copilot/agents/` |
 
 Copie as três skills juntas, lado a lado: as skills legal e site usam o script da skill de segurança pela pasta vizinha.
 
