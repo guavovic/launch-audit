@@ -1,6 +1,6 @@
 """Checagem passiva de um site em produção, usada pelas skills auditoria-seguranca, auditoria-legal e auditoria-site.
 
-Faz só GETs simples (uma requisição por item) e consultas DNS públicas. Nada de fuzzing, força bruta ou escrita.
+Faz só GETs simples (uma requisição por item; no CORS, uma a mais com um Origin fictício) e consultas DNS públicas. Nada de fuzzing, força bruta ou escrita.
 
 Uso:
     python -I checagem_passiva.py https://site.com [--saida resultado.json] [--comparar anterior.json] [--rota /rota/real]
@@ -37,6 +37,7 @@ HEADERS_SEGURANCA = {
     "referrer-policy": "Referrer-Policy",
     "permissions-policy": "Permissions-Policy",
 }
+ORIGEM_TESTE = "https://origem-de-teste.invalid"
 HEADERS_QUE_VAZAM = ["server", "x-powered-by", "x-aspnet-version", "x-aspnetmvc-version"]
 
 # Arquivos que nunca deveriam estar públicos. Cada um com um teste de conteúdo,
@@ -151,9 +152,9 @@ def montar_abridor(seguir):
     return urllib.request.build_opener(https) if seguir else urllib.request.build_opener(https, SemRedirect)
 
 
-def buscar(url, seguir=True, limite=600_000):
+def buscar(url, seguir=True, limite=600_000, extra=None):
     abridor = montar_abridor(seguir)
-    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept-Encoding": "br, gzip"})
+    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept-Encoding": "br, gzip", **(extra or {})})
     try:
         resp = abridor.open(req, timeout=TIMEOUT)
     except urllib.error.HTTPError as e:
@@ -308,6 +309,41 @@ def checar_headers(headers):
         registrar("compressao", "ok", headers.get("content-encoding"), "site")
     else:
         registrar("compressao", "aviso", "HTML sem br/gzip", "site")
+
+
+def classificar_cors(headers):
+    origem = (headers.get("access-control-allow-origin") or "").strip()
+    credenciais = (headers.get("access-control-allow-credentials") or "").strip().lower() == "true"
+    if not origem:
+        return "ok", "ausente"
+    if origem == "null":
+        return "falha", "permite a origem null (qualquer página sandboxed ou arquivo local passa)"
+    if origem == "*":
+        if credenciais:
+            return "falha", "* com Allow-Credentials: true"
+        return "aviso", "* sem credenciais: ok em API pública, confirmar que nada privado sai por aqui"
+    if origem == ORIGEM_TESTE:
+        return "falha", "reflete a origem recebida" + (" com Allow-Credentials: true" if credenciais else "")
+    return "ok", f"origem específica: {origem}"
+
+
+def checar_cors(base, rota, headers_home, headers_rota):
+    caminho = "/" + rota.lstrip("/")
+    respostas = [("home", headers_home)]
+    if caminho != "/":
+        respostas.append((f"rota {caminho}", headers_rota))
+    try:
+        _, headers_origem, _, _ = buscar(base + caminho, extra={"Origin": ORIGEM_TESTE})
+        time.sleep(PAUSA)
+        respostas.append(("com Origin de teste", headers_origem))
+    except (OSError, ssl.SSLError, http.client.HTTPException) as e:
+        registrar("cors-origem-teste", "info", f"não deu pra testar com Origin: {descrever_erro(e)}", "seguranca")
+    ordem = {"falha": 0, "aviso": 1, "ok": 2}
+    avaliadas = [(onde, *classificar_cors(h)) for onde, h in respostas]
+    onde, status, detalhe = min(avaliadas, key=lambda a: ordem[a[1]])
+    if status == "ok" and detalhe == "ausente":
+        detalhe = "sem Access-Control-Allow-Origin: só o próprio domínio lê as respostas"
+    registrar("cors", status, f"{onde}: {detalhe}" if status != "ok" else detalhe, "seguranca")
 
 
 def checar_cabeca(base, html):
@@ -510,6 +546,7 @@ def main():
         emitir(base, args)
         sys.exit(f"sem os headers não dá pra seguir: {descrever_erro(e)}")
     checar_headers(headers_comp)
+    checar_cors(base, args.rota, headers, headers_comp)
     if status != 200 and api:
         registrar("pagina", "info", "API sem página na raiz: head, SEO, robots e sitemap não se aplicam", "site")
         p = Cabeca()

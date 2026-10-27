@@ -102,7 +102,7 @@ Se o Python local não validar a cadeia de certificados de um site (`CERTIFICATE
 
 Site com **fallback de SPA** (qualquer caminho devolve a home com 200) aparece marcado no detalhe: sitemap que não existe, 404 que não existe e arquivos que só parecem estar lá.
 
-Ele cobre HTTPS e HSTS, TLS (versão, validade, TLS antigo), headers, CSP, cookies, compressão, `<head>` (title, description, og, favicon, lang, alt), scripts de terceiros e rastreadores, robots, sitemap, 404, sourcemap, arquivos sensíveis expostos e DNS (SPF, DMARC, CAA, MX). Guarde o JSON junto do relatório pra comparar na próxima revisão.
+Ele cobre HTTPS e HSTS, TLS (versão, validade, TLS antigo), headers, CSP, cookies, CORS (`Access-Control-Allow-Origin` e `Allow-Credentials` na home, na `--rota` e numa requisição com `Origin` fictício: `*`, origem refletida e `null`), compressão, `<head>` (title, description, og, favicon, lang, alt), scripts de terceiros e rastreadores, robots, sitemap, 404, sourcemap, arquivos sensíveis expostos e DNS (SPF, DMARC, CAA, MX). Guarde o JSON junto do relatório pra comparar na próxima revisão.
 
 **Anti-bot (aprendido na primeira rodada real, 21/10/2026):** a Vercel (e a Cloudflare) passam a desafiar o IP depois que ele consulta `/.env` e `/.git`, e o bloqueio dura vários minutos, inclusive pra home e pro Lighthouse. Por isso:
 - o script consulta os caminhos sensíveis **por último** e marca resposta de anti-bot como `bloqueado` (não verificado), nunca como falha;
