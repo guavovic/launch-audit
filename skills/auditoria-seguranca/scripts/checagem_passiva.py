@@ -4,9 +4,12 @@ Faz só GETs simples (uma requisição por item) e consultas DNS públicas. Nada
 
 Uso:
     python -I checagem_passiva.py https://site.com [--saida resultado.json] [--comparar anterior.json] [--rota /rota/real]
+
+Alvo local (localhost, 127.0.0.0/8, ::1, nomes .localhost, .local e .test) pode ir em http://. Alvo remoto exige https://.
 """
 
 import argparse
+import ipaddress
 import json
 import re
 import socket
@@ -48,8 +51,21 @@ ARQUIVOS_SENSIVEIS = {
     "/docker-compose.yml": lambda t: "services:" in t,
 }
 
+SUFIXOS_LOCAIS = (".localhost", ".local", ".test")
+
 resultados = []
 HOME = {"corpo": ""}
+ALVO = {"local": False}
+
+
+def e_host_local(host):
+    host = (host or "").lower()
+    if host == "localhost" or host.endswith(SUFIXOS_LOCAIS):
+        return True
+    try:
+        return ipaddress.ip_address(host).is_loopback
+    except ValueError:
+        return False
 
 
 def e_fallback(corpo):
@@ -161,6 +177,10 @@ def doh(nome, tipo):
 
 def checar_https(base):
     host = urllib.parse.urlparse(base).hostname
+    if ALVO["local"]:
+        for id_ in ("https-redirect", "tls"):
+            registrar(id_, "info", "alvo local: não se aplica (sem TLS nem redirecionamento pra HTTPS)", "seguranca")
+        return
     try:
         status, headers, _, _ = buscar_texto(f"http://{host}/", seguir=False)
         destino = headers.get("location", "")
@@ -208,6 +228,10 @@ def checar_headers(headers):
     for h, nome in HEADERS_SEGURANCA.items():
         valor = headers.get(h)
         falta = "info" if api and h in so_html else "falha"
+        if ALVO["local"] and h == "strict-transport-security":
+            registrar(f"header-{nome}", "ok" if valor else "info",
+                      valor or "ausente (alvo local: HSTS só vale em HTTPS)", "seguranca")
+            continue
         registrar(f"header-{nome}", "ok" if valor else falta,
                   valor or ("ausente (resposta JSON: opcional)" if falta == "info" else "ausente"), "seguranca")
     if not (headers.get("x-frame-options") or "frame-ancestors" in (headers.get("content-security-policy") or "")):
@@ -224,7 +248,8 @@ def checar_headers(headers):
                   f"revela tecnologia: {vazam}", "seguranca")
     for c in headers.get_all("set-cookie") or []:
         nome = c.split("=", 1)[0]
-        faltando = [f for f in ("secure", "httponly", "samesite") if f not in c.lower()]
+        exigidos = ("httponly", "samesite") if ALVO["local"] else ("secure", "httponly", "samesite")
+        faltando = [f for f in exigidos if f not in c.lower()]
         registrar(f"cookie-{nome}", "aviso" if faltando else "ok",
                   f"faltando {faltando}" if faltando else "Secure, HttpOnly e SameSite", "seguranca")
     if (headers.get("content-encoding") or "") in ("br", "gzip"):
@@ -406,8 +431,12 @@ def main():
     ap.add_argument("--rota", default="/", help="rota real de onde ler os headers (API sem página na raiz)")
     args = ap.parse_args()
     base = args.url.rstrip("/")
-    if not base.startswith("https://"):
-        sys.exit("passe a URL com https://")
+    partes = urllib.parse.urlparse(base)
+    if partes.scheme not in ("http", "https") or not partes.hostname:
+        sys.exit("passe a URL completa, com http:// (só alvo local) ou https://")
+    ALVO["local"] = e_host_local(partes.hostname)
+    if partes.scheme == "http" and not ALVO["local"]:
+        sys.exit("alvo remoto exige https://: http:// só vale pra localhost, 127.0.0.0/8, ::1 e nomes .localhost, .local ou .test")
 
     checar_https(base)
     try:
@@ -426,7 +455,10 @@ def main():
     else:
         p = checar_cabeca(base, html)
     checar_seo(base, so_erro=status != 200 and api)
-    checar_dns(base)
+    if ALVO["local"]:
+        registrar("dns", "info", "alvo local: SPF/DMARC/CAA não se aplicam", "site")
+    else:
+        checar_dns(base)
     checar_sourcemaps(base, p)
     checar_arquivos(base)
 
