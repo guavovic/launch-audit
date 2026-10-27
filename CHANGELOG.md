@@ -14,6 +14,7 @@
 - Checagem passiva reconhece o fallback de SPA (sitemap, 404, sourcemap e arquivos sensíveis que na verdade são a home) e API sem página na raiz (`--rota`, headers de página rebaixados pra `info` em resposta JSON, checagens de SEO puladas). Mais plataformas na lista de subdomínios sem DNS próprio (Render, Fly, Railway, Heroku, Azure, Firebase). Veio da rodada na achai-api.
 - Checagem passiva aceita alvo local em `http://` (localhost, 127.0.0.0/8, ::1, `.localhost`, `.local`, `.test`): TLS, redirecionamento pra HTTPS, HSTS, `Secure` do cookie e DNS viram `info` em vez de erro. Alvo remoto segue exigindo `https://` (#25).
 - Checklist de segurança ganha o controle de XXE: em todo ponto que lê XML (upload, SOAP, SVG, DOCX/XLSX), confirmar que o parser desliga DTD e entidade externa, ou que o endpoint não aceita XML. Item em A05 com a opção por biblioteca (Java, .NET, PHP, Python, Node), linha no Upload, item no checklist de ASP.NET e busca pelos leitores de XML em `comandos.md` (#26).
+- Checagem passiva não termina mais com traceback quando o TLS falha: o erro vira achado `falha` dizendo se o certificado do alvo é inválido (expirado, autoassinado, nome errado) ou se a cadeia do Python local não fecha, e sem a home o script encerra com mensagem e código 1. Usa `truststore` ou `certifi` quando instalados, sem virar dependência e sem desligar a verificação. No Python 3.14 do Windows, `https://example.com` falhava por isso (#30).
 
 ## v0.1.0 (21/10/2026)
 

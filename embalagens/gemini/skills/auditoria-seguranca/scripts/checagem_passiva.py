@@ -10,6 +10,7 @@ Alvo local (localhost, 127.0.0.0/8, ::1, nomes .localhost, .local e .test) pode 
 
 import argparse
 import ipaddress
+import http.client
 import json
 import re
 import socket
@@ -57,6 +58,53 @@ resultados = []
 HOME = {"corpo": ""}
 ALVO = {"local": False}
 
+CODIGOS_CERT_DO_ALVO = {
+    10: "expirado",
+    18: "autoassinado",
+    19: "autoassinado na cadeia",
+    62: "não vale pro nome do host",
+    0x800B0101: "expirado",
+    0x800B0109: "autoassinado ou raiz não confiável",
+    0x800B010F: "não vale pro nome do host",
+}
+
+
+def criar_contexto_ssl():
+    """Armazenamento do sistema (truststore) se instalado; senão o padrão do Python, somado ao certifi se existir."""
+    try:
+        import truststore
+        return truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+    except ImportError:
+        pass
+    ctx = ssl.create_default_context()
+    try:
+        import certifi
+        ctx.load_verify_locations(cafile=certifi.where())
+    except ImportError:
+        pass
+    return ctx
+
+
+CTX_SSL = criar_contexto_ssl()
+
+
+def erro_verificacao(e):
+    while e is not None and not isinstance(e, ssl.SSLCertVerificationError):
+        e = e.reason if isinstance(e, urllib.error.URLError) else None
+    return e
+
+
+def descrever_erro(e):
+    falha_cert = erro_verificacao(e)
+    if falha_cert is None:
+        return str(getattr(e, "reason", None) or e)
+    motivo = CODIGOS_CERT_DO_ALVO.get(falha_cert.verify_code & 0xFFFFFFFF)
+    if motivo:
+        return f"certificado do alvo inválido ({motivo}): {falha_cert.verify_message}"
+    return (f"o Python local não conseguiu montar a cadeia de certificados ({falha_cert.verify_message}); "
+            "pode ser cadeia incompleta no Python local ou no servidor. "
+            "Rode de novo com 'pip install truststore' (usa o armazenamento do sistema) ou 'pip install certifi'")
+
 
 def e_host_local(host):
     host = (host or "").lower()
@@ -98,8 +146,13 @@ class SemRedirect(urllib.request.HTTPRedirectHandler):
         return None
 
 
+def montar_abridor(seguir):
+    https = urllib.request.HTTPSHandler(context=CTX_SSL)
+    return urllib.request.build_opener(https) if seguir else urllib.request.build_opener(https, SemRedirect)
+
+
 def buscar(url, seguir=True, limite=600_000):
-    abridor = urllib.request.build_opener() if seguir else urllib.request.build_opener(SemRedirect)
+    abridor = montar_abridor(seguir)
     req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept-Encoding": "br, gzip"})
     try:
         resp = abridor.open(req, timeout=TIMEOUT)
@@ -111,7 +164,7 @@ def buscar(url, seguir=True, limite=600_000):
 
 def buscar_texto(url, seguir=True):
     req = urllib.request.Request(url, headers={"User-Agent": UA})
-    abridor = urllib.request.build_opener() if seguir else urllib.request.build_opener(SemRedirect)
+    abridor = montar_abridor(seguir)
     try:
         resp = abridor.open(req, timeout=TIMEOUT)
     except urllib.error.HTTPError as e:
@@ -170,7 +223,7 @@ class Cabeca(HTMLParser):
 def doh(nome, tipo):
     url = f"https://cloudflare-dns.com/dns-query?name={urllib.parse.quote(nome)}&type={tipo}"
     req = urllib.request.Request(url, headers={"Accept": "application/dns-json", "User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
+    with urllib.request.urlopen(req, timeout=TIMEOUT, context=CTX_SSL) as r:
         dados = json.load(r)
     return [x.get("data", "").strip('"') for x in dados.get("Answer", []) if x.get("type") in (16, 257, 15, 1, 5)]
 
@@ -196,9 +249,8 @@ def checar_https(base):
         registrar("https-redirect", "info", f"não deu pra testar HTTP: {e}", "seguranca")
 
     try:
-        ctx = ssl.create_default_context()
         with socket.create_connection((host, 443), timeout=TIMEOUT) as s:
-            with ctx.wrap_socket(s, server_hostname=host) as t:
+            with CTX_SSL.wrap_socket(s, server_hostname=host) as t:
                 versao = t.version()
                 cert = t.getpeercert()
         vence = datetime.strptime(cert["notAfter"], "%b %d %H:%M:%S %Y %Z").replace(tzinfo=timezone.utc)
@@ -206,7 +258,7 @@ def checar_https(base):
         registrar("tls-versao", "ok" if versao in ("TLSv1.3", "TLSv1.2") else "falha", versao, "seguranca")
         registrar("tls-certificado", "ok" if dias > 14 else "aviso", f"vence em {dias} dias ({vence:%d/%m/%Y})", "site")
     except Exception as e:
-        registrar("tls", "falha", f"erro no TLS: {e}", "seguranca")
+        registrar("tls", "falha", f"erro no TLS: {descrever_erro(e)}", "seguranca")
 
     try:
         ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
@@ -443,11 +495,20 @@ def main():
         status, headers, html, final = buscar_texto(base + "/")
     except Bloqueado as b:
         sys.exit(f"o anti-bot do site bloqueou até a home ({b}); espere uns minutos ou rode de outra rede")
+    except (OSError, ssl.SSLError, http.client.HTTPException) as e:
+        registrar("home", "falha", f"não foi possível buscar a home: {descrever_erro(e)}", "site")
+        emitir(base, args)
+        sys.exit(f"sem a home não dá pra seguir: {descrever_erro(e)}")
     HOME["corpo"] = html if status == 200 else ""
     api = "json" in (headers.get("content-type") or "") or status == 404 and args.rota != "/"
     registrar("home", "ok" if status == 200 else "info" if api else "falha",
               f"{status} em {final}" + (" (API sem página na raiz)" if status != 200 and api else ""), "site")
-    _, headers_comp, _, _ = buscar(base + "/" + args.rota.lstrip("/"))
+    try:
+        _, headers_comp, _, _ = buscar(base + "/" + args.rota.lstrip("/"))
+    except (OSError, ssl.SSLError, http.client.HTTPException) as e:
+        registrar("headers", "falha", f"não foi possível buscar a rota {args.rota}: {descrever_erro(e)}", "seguranca")
+        emitir(base, args)
+        sys.exit(f"sem os headers não dá pra seguir: {descrever_erro(e)}")
     checar_headers(headers_comp)
     if status != 200 and api:
         registrar("pagina", "info", "API sem página na raiz: head, SEO, robots e sitemap não se aplicam", "site")
@@ -461,7 +522,10 @@ def main():
         checar_dns(base)
     checar_sourcemaps(base, p)
     checar_arquivos(base)
+    emitir(base, args)
 
+
+def emitir(base, args):
     saida = {
         "url": base,
         "data": datetime.now().strftime("%d/%m/%Y %H:%M"),
