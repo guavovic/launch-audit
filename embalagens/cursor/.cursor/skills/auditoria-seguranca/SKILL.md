@@ -100,6 +100,8 @@ python -I "<pasta-desta-skill>/scripts/checagem_passiva.py" https://SITE --saida
 
 Pra **API sem página na raiz**, passe `--rota` com uma rota real: os headers são lidos dela, e as checagens de página (head, SEO, robots, sitemap) são puladas. Em resposta JSON, CSP, Permissions-Policy e proteção contra iframe saem como `info`; `nosniff` e HSTS continuam contando. No Git Bash, rode com `MSYS_NO_PATHCONV=1`, senão ele transforma `/rota` em caminho do Windows.
 
+Contra **alvo local** (`localhost`, `127.0.0.0/8`, `::1` e nomes `.localhost`, `.local` ou `.test`) o script aceita `http://`, por exemplo `http://127.0.0.1:3000`. TLS, redirecionamento pra HTTPS, HSTS, o atributo `Secure` do cookie e DNS saem como `info` (não se aplica no local) e o resto das checagens roda normal. Alvo remoto continua exigindo `https://`: com `http://` o script encerra com a explicação.
+
 Site com **fallback de SPA** (qualquer caminho devolve a home com 200) aparece marcado no detalhe: sitemap que não existe, 404 que não existe e arquivos que só parecem estar lá.
 
 Ele cobre HTTPS e HSTS, TLS (versão, validade, TLS antigo), headers, CSP, cookies, compressão, `<head>` (title, description, og, favicon, lang, alt), scripts de terceiros e rastreadores, robots, sitemap, 404, sourcemap, arquivos sensíveis expostos e DNS (SPF, DMARC, CAA, MX). Guarde o JSON junto do relatório pra comparar na próxima revisão.
