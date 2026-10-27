@@ -20,7 +20,7 @@ O repositório não tem versões nem releases: quem instala usa a `main`. Cada m
 - Comparação com ferramentas no Juice Shop 20.3.0 local, no mesmo dia da rodada da skill: OWASP ZAP baseline (1 desafio do gabarito, 63 s), semgrep (16, 133 s) e Lighthouse (0, 77 s, só qualidade da página), contra os 57 da skill. A união não passa de 57 no gabarito; o ganho de juntar está em cabeçalhos de isolamento, CORS e desempenho. Detalhe em `docs/placar/comparacao-ferramentas-2026-10-26.md`. Abriu um buraco na checagem passiva: não olha `Access-Control-Allow-Origin` (#32) (#4).
 - Checagem passiva olha CORS: lê `Access-Control-Allow-Origin` e `Access-Control-Allow-Credentials` na home e na `--rota`, mais uma requisição GET normal com `Origin: https://origem-de-teste.invalid` pra ver se o servidor reflete a origem. Ausente é `ok`; `*` sem credenciais é `aviso` (ok em API pública); `*` ou origem refletida com credenciais, origem refletida e `null` são `falha`. Novo id `cors`, também em alvo local. No Juice Shop 20.3.0 local aparece o curinga que o ZAP tinha achado (#32).
 
-## v0.1.0 (21/10/2026)
+## 21/10/2026
 
 Primeira versão pública.
 
