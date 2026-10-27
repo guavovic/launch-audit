@@ -1,5 +1,6 @@
 {
   "name": "launch-audit-skills",
+  "version": "0.1.0",
   "description": "Auditoria de site, API ou aplicativo antes de ir ao ar: segurança, risco jurídico no Brasil e qualidade de lançamento, com evidência e com o que o projeto não precisa.",
   "author": {
     "name": "Gustavo Victor",
