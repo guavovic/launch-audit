@@ -1,6 +1,8 @@
 # Mudanças
 
-## Próxima versão (v0.2)
+## Próxima versão
+
+## v0.2.0 (27/10/2026)
 
 - Nome novo: o repositório passou de `claude-security-audit` para `launch-audit`, porque audita site, API e aplicativo antes de ir ao ar, nas três frentes, e não depende de uma ferramenta só. O endereço antigo redireciona.
 - Instalação como plugin do Claude Code: `/plugin marketplace add guavovic/launch-audit` e `/plugin install launch-audit@launch-audit` trazem as três skills e o subagente, sem copiar pasta.
