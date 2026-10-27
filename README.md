@@ -4,7 +4,7 @@
 
 Skills pro Claude Code que auditam site, API ou aplicativo **antes de ir ao ar**, em três frentes: **segurança**, **risco jurídico no Brasil** e **qualidade de lançamento**. Toda conclusão vem com evidência, e o relatório também diz o que o projeto **não precisa**.
 
-![versão](https://img.shields.io/github/v/release/guavovic/launch-audit?style=flat-square&label=vers%C3%A3o) ![licença](https://img.shields.io/github/license/guavovic/launch-audit?style=flat-square&label=licen%C3%A7a)
+![licença](https://img.shields.io/github/license/guavovic/launch-audit?style=flat-square&label=licen%C3%A7a)
 
 [Placar](docs/placar.md) • [Mudanças](CHANGELOG.md)
 
